@@ -98,7 +98,7 @@
 		    "pre": [
 			    "drop table if exists hTest_nonull;",
                 "create public table hTest_nonull(name String, qty int) use PersistEngine=\"HISTORICAL\";",
-                "insert into hTest_nonull values(\"Rob\",123), (\"Rob\",1234), (\"Rob\", -234215351521);",
+                "insert into hTest_nonull values(\"Rob\",123), (\"Rob\",1234), (\"Rob\", -12345);",
                 "call __OPTIMIZE_HISTORICAL_TABLE(\"hTest_nonull\");"
             ],
             "test": "SELECT STORAGE FROM Diagnose table hTest_nonull WHERE NAME == \"qty\" AND TYPE ==\"PCOLUMN\";",
@@ -172,7 +172,90 @@
                 "use ds=AMI execute drop table hTest;"
             ],
             "check": "== \"VARSIZE5\""
+        },
+        {
+            "name": "string of low-cardinality Optimize Test 9",
+		    "desc": "strings that are recurring a lot post-optimized",
+    		"type": "assertstringcompare",
+            "timeout": 5.0,
+		    "pre": [
+			    "drop table if exists hTest;",
+                "create public table hTest(name String, qty int) use PersistEngine=\"HISTORICAL\";",
+                "for (int i =0;i<100000;i++) insert into hTest values(\"test\"+i%100,123);",
+                "call __OPTIMIZE_HISTORICAL_TABLE(\"hTest\");"
+            ],
+            "test": "select STORAGE from diagnose table hTest where NAME==\"name\" and TYPE==\"PCOLUMN\";",
+            "post": [
+                "use ds=AMI execute drop table hTest;"
+            ],
+            "check": "== \"BITMAP1\""
+        },
+        {
+            "name": "string of low-cardinality Optimize Test 10",
+		    "desc": "strings that are recurring a lot pre-optimized",
+    		"type": "assertstringcompare",
+            "timeout": 5.0,
+		    "pre": [
+			    "drop table if exists hTest;",
+                "create public table hTest(name String, qty int) use PersistEngine=\"HISTORICAL\";",
+                "for (int i =0;i<100000;i++) insert into hTest values(\"test\"+i%1000,123);"
+            ],
+            "test": "select STORAGE from diagnose table hTest where NAME==\"name\" and TYPE==\"PCOLUMN\";",
+            "post": [
+                "use ds=AMI execute drop table hTest;"
+            ],
+            "check": "== \"VARSIZE5\""
+        },
+        {
+            "name": "string of low-cardinality Optimize Test 11",
+		    "desc": "strings that are recurring a lot post-optimized",
+    		"type": "assertstringcompare",
+            "timeout": 5.0,
+		    "pre": [
+			    "drop table if exists hTest;",
+                "create public table hTest(name String, qty int) use PersistEngine=\"HISTORICAL\";",
+                "for (int i =0;i<100000;i++) insert into hTest values(\"test\"+i%1000,123);",
+                "call __OPTIMIZE_HISTORICAL_TABLE(\"hTest\");"
+            ],
+            "test": "select STORAGE from diagnose table hTest where NAME==\"name\" and TYPE==\"PCOLUMN\";",
+            "post": [
+                "use ds=AMI execute drop table hTest;"
+            ],
+            "check": "== \"BITMAP2\""
+        },
+        {
+            "name": "string of low-cardinality Optimize Test 12",
+		    "desc": "strings that are recurring a lot pre-optimized",
+    		"type": "assertstringcompare",
+            "timeout": 5.0,
+		    "pre": [
+			    "drop table if exists hTest;",
+                "create public table hTest(name String, qty int) use PersistEngine=\"HISTORICAL\";",
+                "for (int i =0;i<100000;i++) insert into hTest values(\"test\"+i%2000,123);"
+            ],
+            "test": "select STORAGE from diagnose table hTest where NAME==\"name\" and TYPE==\"PCOLUMN\";",
+            "post": [
+                "use ds=AMI execute drop table hTest;"
+            ],
+            "check": "== \"VARSIZE5\""
+        },
+        {
+            "name": "string of low-cardinality Optimize Test 13",
+		    "desc": "strings that are recurring a lot post-optimized",
+    		"type": "assertstringcompare",
+            "timeout": 5.0,
+		    "pre": [
+			    "drop table if exists hTest;",
+                "create public table hTest(name String, qty int) use PersistEngine=\"HISTORICAL\";",
+                "for (int i =0;i<100000;i++) insert into hTest values(\"test\"+i%2000,123);",
+                "call __OPTIMIZE_HISTORICAL_TABLE(\"hTest\");"
+            ],
+            "test": "select STORAGE from diagnose table hTest where NAME==\"name\" and TYPE==\"PCOLUMN\";",
+            "post": [
+                "use ds=AMI execute drop table hTest;"
+            ],
+            "check": "== \"BITMAP2\""
         }
+
     ]
 }
-
