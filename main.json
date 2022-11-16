@@ -255,8 +255,12 @@
                 "use ds=AMI execute drop table hTest;"
             ],
             "check": "== \"BITMAP2\""
+        },
+
+        {
+            "TEST": "test"
+		  
         }
 
     ]
 }
-
